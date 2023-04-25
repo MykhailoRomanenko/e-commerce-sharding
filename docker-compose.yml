@@ -2,6 +2,7 @@ version: '3'
 
 services:
   proxysql:
+    container_name: proxysql-1
     image: proxysql/proxysql:latest
     ports:
       - "6033:6033"
