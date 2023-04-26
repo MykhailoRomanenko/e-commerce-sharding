@@ -1,46 +1,51 @@
 version: '3'
 
 services:
-  proxysql:
-    container_name: proxysql-1
-    image: proxysql/proxysql:latest
+  configserver:
+    image: mongo:latest
+    command: mongod --configsvr --replSet configrs --bind_ip_all
     ports:
-      - "6033:6033"
-      - "6032:6032"
-    volumes:
-      - ./config/proxysql:/etc/proxysql
-    environment:
-      - ADMIN_USER=admin
-      - ADMIN_PASSWORD=admin
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-    depends_on:
-      - db1
-      - db2
+      - "27019:27019"
     networks:
       - n1
 
-  db1:
-    image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_DATABASE=my_database
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-    volumes:
-      - /var/lib/db1:/var/lib/mysql
+  mongos:
+    image: mongo:latest
+    command: mongos --configdb configrs/configserver:27019 --bind_ip_all
+    ports:
+      - "27017:27017"
     networks:
       - n1
 
-  db2:
-    image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_DATABASE=my_database
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-    volumes:
-      - /var/lib/db2:/var/lib/mysql
+  shard1a:
+    image: mongo:latest
+    command: mongod --shardsvr --replSet shard1rs --bind_ip_all
+    ports:
+      - "27018:27018"
+    networks:
+      - n1
+
+  shard1b:
+    image: mongo:latest
+    command: mongod --shardsvr --replSet shard1rs --bind_ip_all
+    ports:
+      - "27020:27020"
+    networks:
+      - n1
+
+  shard2a:
+    image: mongo:latest
+    command: mongod --shardsvr --replSet shard2rs --bind_ip_all
+    ports:
+      - "27021:27021"
+    networks:
+      - n1
+
+  shard2b:
+    image: mongo:latest
+    command: mongod --shardsvr --replSet shard2rs --bind_ip_all
+    ports:
+      - "27022:27022"
     networks:
       - n1
 
