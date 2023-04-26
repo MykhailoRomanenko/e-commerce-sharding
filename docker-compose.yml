@@ -1,64 +1,76 @@
 version: '3'
 
 services:
-  configserver:
-    image: mongo:latest
-    command: mongod --configsvr --replSet configrs --bind_ip_all
-    ports:
-      - "27019:27019"
-    networks:
-      - n1
+  # configserver:
+  #   image: mongo:latest
+  #   command: mongod --configsvr --replSet configrs --bind_ip_all
+  #   ports:
+  #     - "27019:27019"
+  #   networks:
+  #     - n1
 
-  mongos:
-    image: mongo:latest
-    command: mongos --configdb configrs/configserver:27019 --bind_ip_all
-    ports:
-      - "27017:27017"
-    networks:
-      - n1
+  # mongos:
+  #   image: mongo:latest
+  #   command: mongos --configdb configrs/configserver:27019 --bind_ip_all
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - n1
 
-  shard1a:
-    image: mongo:latest
-    command: mongod --shardsvr --replSet shard1rs --bind_ip_all
-    ports:
-      - "27018:27018"
-    networks:
-      - n1
+  # shard1a:
+  #   image: mongo:latest
+  #   command: mongod --shardsvr --replSet shard1rs --bind_ip_all
+  #   ports:
+  #     - "27018:27018"
+  #   networks:
+  #     - n1
 
-  shard1b:
-    image: mongo:latest
-    command: mongod --shardsvr --replSet shard1rs --bind_ip_all
-    ports:
-      - "27020:27020"
-    networks:
-      - n1
+  # shard1b:
+  #   image: mongo:latest
+  #   command: mongod --shardsvr --replSet shard1rs --bind_ip_all
+  #   ports:
+  #     - "27020:27020"
+  #   networks:
+  #     - n1
 
-  shard2a:
-    image: mongo:latest
-    command: mongod --shardsvr --replSet shard2rs --bind_ip_all
-    ports:
-      - "27021:27021"
-    networks:
-      - n1
+  # shard2a:
+  #   image: mongo:latest
+  #   command: mongod --shardsvr --replSet shard2rs --bind_ip_all
+  #   ports:
+  #     - "27021:27021"
+  #   networks:
+  #     - n1
 
-  shard2b:
-    image: mongo:latest
-    command: mongod --shardsvr --replSet shard2rs --bind_ip_all
-    ports:
-      - "27022:27022"
-    networks:
-      - n1
+  # shard2b:
+  #   image: mongo:latest
+  #   command: mongod --shardsvr --replSet shard2rs --bind_ip_all
+  #   ports:
+  #     - "27022:27022"
+  #   networks:
+  #     - n1
 
-  rabbitmq:
-    image: rabbitmq:latest
+  # rabbitmq:
+  #   image: rabbitmq:latest
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=user
+  #     - RABBITMQ_DEFAULT_PASS=password
+  #   networks:
+  #     - n1
+
+  gateway-service-1:
+    build: 
+      context: gateway-service
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
-    networks:
-      - n1
+      - "3000:3000"
+
+  gateway-service-2:
+    build: 
+      context: gateway-service
+    ports:
+      - "3001:3000"
 
 networks:
   n1:

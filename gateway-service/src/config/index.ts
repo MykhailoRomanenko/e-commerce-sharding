@@ -4,11 +4,8 @@ export interface AppConfig {
 }
 
 export function loadConfig(): AppConfig {
-  const port = process.env.APP_PORT;
+  const port = process.env.APP_PORT || '3000';
 
-  if (!port) {
-    throw new Error('APP_PORT not provided!');
-  }
   return {
     rmqUrl: process.env.RMQ_URL,
     port,
