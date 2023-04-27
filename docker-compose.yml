@@ -49,14 +49,57 @@ services:
   #   networks:
   #     - n1
 
-  rabbitmq:
+  rabbitmq1:
     image: "rabbitmq:3-management"
     restart: on-failure
+    hostname: rabbitmq1
     volumes:
-      - rmq:/var/lib/rabbitmq
+      - rmq-1:/var/lib/rabbitmq
+      - ./rmq-conf/rabbitmq1/:/config/
+    env_file:
+      - rmq-cluster.env
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq1
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
     ports:
-      - "5672:5672"
+      - "5672"
       - "15672:15672"
+    networks:
+      - n1
+
+  rabbitmq2:
+    image: "rabbitmq:3-management"
+    restart: on-failure
+    hostname: rabbitmq2
+    volumes:
+      - rmq-2:/var/lib/rabbitmq
+      - ./rmq-conf/rabbitmq2/:/config/
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq2
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+    env_file:
+      - rmq-cluster.env
+    ports:
+      - "5672"
+      - "15673:15672"
+    networks:
+      - n1
+
+  rabbitmq3:
+    image: "rabbitmq:3-management"
+    restart: on-failure
+    hostname: rabbitmq3
+    volumes:
+      - rmq-3:/var/lib/rabbitmq
+      - ./rmq-conf/rabbitmq3/:/config/
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq3
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+    env_file:
+      - rmq-cluster.env
+    ports:
+      - "5672"
+      - "15674:15672"
     networks:
       - n1
 
@@ -70,7 +113,8 @@ services:
     networks:
       - n1
     depends_on:
-      - rabbitmq
+      - rabbitmq1
+      - rabbitmq2
 
   gateway-service-2:
     build: 
@@ -81,12 +125,35 @@ services:
       - rmq.env
     networks:
       - n1
-    depends_on:
-      - rabbitmq
+
+  data-access-service-1:
+    build: 
+      context: data-access-service
+    ports:
+      - "3002:3000"
+    env_file:
+      - rmq.env
+    networks:
+      - n1
+
+  data-access-service-2:
+    build: 
+      context: data-access-service
+    ports:
+      - "3003:3000"
+    env_file:
+      - rmq.env
+    networks:
+      - n1
 
 networks:
   n1:
     driver: bridge
+
 volumes:
-  rmq:
+  rmq-1:
+    driver: local
+  rmq-2:
+    driver: local
+  rmq-3:
     driver: local

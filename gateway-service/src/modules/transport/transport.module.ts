@@ -11,7 +11,7 @@ import { TransportService } from './transport.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig, true>) => {
-        const rmqUrl = configService.get<string>('rmqUrl');
+        const rmqUrl = configService.get<string[]>('rmqUrl');
         const exch = configService.get<string>('exchange');
 
         console.log('Attempting to connect to RabbitMQ at', rmqUrl);
