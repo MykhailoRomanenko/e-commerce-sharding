@@ -6,6 +6,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { ConfigModule } from '@nestjs/config';
 import { loadConfig } from './config';
+import { TransportModule } from './modules/transport/transport.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { loadConfig } from './config';
     ProductModule,
     CategoryModule,
     SupplierModule,
+    TransportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -49,29 +49,44 @@ services:
   #   networks:
   #     - n1
 
-  # rabbitmq:
-  #   image: rabbitmq:latest
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=user
-  #     - RABBITMQ_DEFAULT_PASS=password
-  #   networks:
-  #     - n1
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    restart: on-failure
+    volumes:
+      - rmq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - n1
 
   gateway-service-1:
     build: 
       context: gateway-service
     ports:
       - "3000:3000"
+    env_file:
+      - rmq.env
+    networks:
+      - n1
+    depends_on:
+      - rabbitmq
 
   gateway-service-2:
     build: 
       context: gateway-service
     ports:
       - "3001:3000"
+    env_file:
+      - rmq.env
+    networks:
+      - n1
+    depends_on:
+      - rabbitmq
 
 networks:
   n1:
     driver: bridge
+volumes:
+  rmq:
+    driver: local
