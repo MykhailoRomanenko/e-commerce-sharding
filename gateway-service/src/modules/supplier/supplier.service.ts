@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSupplierDto } from './dto/create-supplier.dto';
-import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { CreateSupplierDto, SupplierFindAllParams } from './dto/dto';
+import { TransportService } from '../transport/transport.service';
+import { Supplier } from './entities/supplier.entity';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class SupplierService {
-  create(createSupplierDto: CreateSupplierDto) {
-    return 'This action adds a new supplier';
+  private readonly logger: Logger;
+
+  constructor(private readonly transportService: TransportService) {
+    this.logger = new Logger(TransportService.name);
   }
 
-  findAll() {
-    return `This action returns all supplier`;
+  async create(createProductDto: CreateSupplierDto) {
+    this.logger.log('Sending create-supplier');
+    const res = await this.transportService.request<
+      { success: boolean },
+      CreateSupplierDto
+    >('create-supplier', createProductDto);
+    return res;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} supplier`;
-  }
-
-  update(id: number, updateSupplierDto: UpdateSupplierDto) {
-    return `This action updates a #${id} supplier`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} supplier`;
+  async findAll(params: SupplierFindAllParams) {
+    this.logger.log('Sending findall-supplier');
+    const res = await this.transportService.request<
+      Supplier[],
+      SupplierFindAllParams
+    >('findall-supplier', params);
+    return res;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from './dto/dto';
 import { TransportService } from '../transport/transport.service';
+import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoryService {
@@ -12,27 +12,19 @@ export class CategoryService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     this.logger.log('Sending create-category');
-    const res = await this.transportService.request<CreateCategoryDto, any>(
-      'create-category',
-      createCategoryDto,
+    const res = await this.transportService.request<
+      { success: boolean },
+      CreateCategoryDto
+    >('create-category', createCategoryDto);
+    return res;
+  }
+
+  async findAll() {
+    this.logger.log('Sending findall-category');
+    const res = await this.transportService.request<Category[], object>(
+      'findall-category',
+      {},
     );
-    this.logger.log(res);
-    return 'This action adds a new category';
-  }
-
-  findAll() {
-    return `This action returns all category`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+    return res;
   }
 }

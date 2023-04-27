@@ -16,7 +16,7 @@ export class TransportService {
 
   //   async publish() {}
 
-  async request<P, R>(key: string, payload: P) {
+  async request<R, P = Record<string, never>>(key: string, payload: P) {
     return await this.amqp.request<R>({
       exchange: this.exchange,
       routingKey: key,

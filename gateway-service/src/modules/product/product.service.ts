@@ -1,26 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateProductDto, ProductFindAllParams } from './dto/dto';
+import { TransportService } from '../transport/transport.service';
+import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  private readonly logger: Logger;
+  constructor(private readonly transportService: TransportService) {
+    this.logger = new Logger(ProductService.name);
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async create(createProductDto: CreateProductDto) {
+    this.logger.log('Sending create-product');
+    const res = await this.transportService.request<
+      { success: boolean },
+      CreateProductDto
+    >('create-product', createProductDto);
+    return res;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
-  }
-
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async findAll(params: ProductFindAllParams) {
+    this.logger.log('Sending findall-product');
+    const res = await this.transportService.request<
+      Product[],
+      ProductFindAllParams
+    >('findall-product', params);
+    return res;
   }
 }
