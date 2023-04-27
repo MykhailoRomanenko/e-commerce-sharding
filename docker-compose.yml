@@ -1,53 +1,44 @@
 version: '3'
 
 services:
-  # configserver:
-  #   image: mongo:latest
-  #   command: mongod --configsvr --replSet configrs --bind_ip_all
-  #   ports:
-  #     - "27019:27019"
-  #   networks:
-  #     - n1
-
-  # mongos:
-  #   image: mongo:latest
-  #   command: mongos --configdb configrs/configserver:27019 --bind_ip_all
-  #   ports:
-  #     - "27017:27017"
-  #   networks:
-  #     - n1
-
-  # shard1a:
-  #   image: mongo:latest
-  #   command: mongod --shardsvr --replSet shard1rs --bind_ip_all
-  #   ports:
-  #     - "27018:27018"
-  #   networks:
-  #     - n1
-
-  # shard1b:
-  #   image: mongo:latest
-  #   command: mongod --shardsvr --replSet shard1rs --bind_ip_all
-  #   ports:
-  #     - "27020:27020"
-  #   networks:
-  #     - n1
-
-  # shard2a:
-  #   image: mongo:latest
-  #   command: mongod --shardsvr --replSet shard2rs --bind_ip_all
-  #   ports:
-  #     - "27021:27021"
-  #   networks:
-  #     - n1
-
-  # shard2b:
-  #   image: mongo:latest
-  #   command: mongod --shardsvr --replSet shard2rs --bind_ip_all
-  #   ports:
-  #     - "27022:27022"
-  #   networks:
-  #     - n1
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data1:/data/db
+      - ./rs-init.sh:/scripts/rs-init.sh
+    networks:
+      - mongors-network
+      - n1
+    ports:
+      - 27021:27017
+    links:
+      - mongo2
+      - mongo3
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data2:/data/db
+    networks:
+      - mongors-network
+    ports:
+      - 27022:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data3:/data/db
+    networks:
+      - mongors-network
+    ports:
+      - 27023:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
 
   rabbitmq1:
     image: "rabbitmq:3-management"
@@ -148,6 +139,8 @@ services:
 
 networks:
   n1:
+    driver: bridge
+  mongors-network:
     driver: bridge
 
 volumes:
