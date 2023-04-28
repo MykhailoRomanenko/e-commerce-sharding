@@ -7,5 +7,5 @@ export class CreateProductDto {
 }
 
 export class ProductFindAllParams {
-  categoryId?: string;
+  category_id?: string;
 }

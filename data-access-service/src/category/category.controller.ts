@@ -13,18 +13,20 @@ export class CategoryController {
   @RabbitRPC({
     exchange: 'my-exchange',
     routingKey: 'create-category',
-    queue: 'data-access-queue',
+    queue: 'create-category-queue',
   })
   async createCategory(msg: CreateCategoryDto) {
-    return { success: true };
+    this.logger.log('create-category');
+    return this.categoryService.create(msg);
   }
 
   @RabbitRPC({
     exchange: 'my-exchange',
     routingKey: 'findall-category',
-    queue: 'data-access-queue',
+    queue: 'findall-category-queue',
   })
   async findAllCategories() {
-    return []; // TODO mongo
+    this.logger.log('findall-category');
+    return this.categoryService.findAll();
   }
 }

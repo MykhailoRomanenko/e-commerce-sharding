@@ -16,7 +16,14 @@ services:
       - mongo2
       - mongo3
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--quiet",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs"
+      ]
   mongo2:
     container_name: mongo2
     image: mongo:4.4
@@ -27,7 +34,14 @@ services:
     ports:
       - 27022:27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--quiet",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs"
+      ]
   mongo3:
     container_name: mongo3
     image: mongo:4.4
@@ -38,9 +52,17 @@ services:
     ports:
       - 27023:27017
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--quiet",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs"
+      ]
 
   rabbitmq1:
+    container_name: rabbitmq1
     image: "rabbitmq:3-management"
     restart: on-failure
     hostname: rabbitmq1
@@ -59,6 +81,7 @@ services:
       - n1
 
   rabbitmq2:
+    container_name: rabbitmq2
     image: "rabbitmq:3-management"
     restart: on-failure
     hostname: rabbitmq2
@@ -77,6 +100,7 @@ services:
       - n1
 
   rabbitmq3:
+    container_name: rabbitmq3
     image: "rabbitmq:3-management"
     restart: on-failure
     hostname: rabbitmq3
@@ -95,7 +119,8 @@ services:
       - n1
 
   gateway-service-1:
-    build: 
+    container_name: api1
+    build:
       context: gateway-service
     ports:
       - "3000:3000"
@@ -108,7 +133,8 @@ services:
       - rabbitmq2
 
   gateway-service-2:
-    build: 
+    container_name: api2
+    build:
       context: gateway-service
     ports:
       - "3001:3000"
@@ -128,22 +154,26 @@ services:
        - n1
 
   data-access-service-1:
-    build: 
+    container_name: crud1
+    build:
       context: data-access-service
     ports:
       - "3002:3000"
     env_file:
       - rmq.env
+      - mongo.env
     networks:
       - n1
 
   data-access-service-2:
-    build: 
+    container_name: crud2
+    build:
       context: data-access-service
     ports:
       - "3003:3000"
     env_file:
       - rmq.env
+      - mongo.env
     networks:
       - n1
 

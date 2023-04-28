@@ -1,27 +1,32 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { RabbitRPC } from '@golevelup/nestjs-rabbitmq';
 import { CreateProductDto, ProductFindAllParams } from './dto/dto';
 
 @Controller()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  private readonly logger: Logger;
+  constructor(private readonly productService: ProductService) {
+    this.logger = new Logger(ProductController.name);
+  }
 
   @RabbitRPC({
     exchange: 'my-exchange',
     routingKey: 'create-product',
-    queue: 'data-access-queue',
+    queue: 'create-product-queue',
   })
   async createProduct(msg: CreateProductDto) {
-    return { success: true };
+    this.logger.log('create-product');
+    return this.productService.create(msg);
   }
 
   @RabbitRPC({
     exchange: 'my-exchange',
     routingKey: 'findall-product',
-    queue: 'data-access-queue',
+    queue: 'findall-product-queue',
   })
   async findAllProducts(msg: ProductFindAllParams) {
-    return []; // TODO mongo
+    this.logger.log('findall-product');
+    return this.productService.findAll(msg);
   }
 }
