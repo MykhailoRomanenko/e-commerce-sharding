@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateProductDto, ProductFindAllParams } from './dto/dto';
 import { TransportService } from '../transport/transport.service';
 import { Product } from './entities/product.entity';
@@ -43,7 +43,7 @@ export class ProductService {
     >('findall-product', params);
 
     this.cacheService
-      .set(cacheKey, res, 60000)
+      .set(cacheKey, res, 5000)
       .catch((err) => this.logger.error(err));
 
     return res;

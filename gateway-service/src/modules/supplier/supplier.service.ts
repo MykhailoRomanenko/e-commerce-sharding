@@ -1,7 +1,7 @@
 import { CreateSupplierDto, SupplierFindAllParams } from './dto/dto';
 import { TransportService } from '../transport/transport.service';
 import { Supplier } from './entities/supplier.entity';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 
 @Injectable()
