@@ -5,7 +5,7 @@ import { TransportModule } from '../transport/transport.module';
 import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [TransportModule,  CacheModule.register()],
+  imports: [TransportModule, CacheModule.register()],
   controllers: [ProductController],
   providers: [ProductService],
 })

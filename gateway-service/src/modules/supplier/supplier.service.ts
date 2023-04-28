@@ -10,8 +10,8 @@ export class SupplierService {
 
   constructor(
     @Inject('CACHE_MANAGER') private cacheService: Cache,
-    private readonly transportService: TransportService
-    ) {
+    private readonly transportService: TransportService,
+  ) {
     this.logger = new Logger(TransportService.name);
   }
 
@@ -26,9 +26,11 @@ export class SupplierService {
 
   async findAll(params: SupplierFindAllParams) {
     this.logger.log('Sending findall-supplier');
-    const cacheKey = `suppliers${params.productId ? `:${params.productId}` : ''}`;
+    const cacheKey = `suppliers${
+      params.productId ? `:${params.productId}` : ''
+    }`;
     const fromCache = await this.cacheService.get(cacheKey);
-    
+
     if (fromCache) {
       this.logger.log(`Retrieved ${cacheKey} from cache`);
       return fromCache;
@@ -41,9 +43,9 @@ export class SupplierService {
     >('findall-supplier', params);
 
     this.cacheService
-    .set(cacheKey, res, 60000)
-    .catch((err) => this.logger.error(err));
-    
+      .set(cacheKey, res, 60000)
+      .catch((err) => this.logger.error(err));
+
     return res;
   }
 }
