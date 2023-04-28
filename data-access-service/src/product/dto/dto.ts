@@ -9,3 +9,8 @@ export class CreateProductDto {
 export class ProductFindAllParams {
   category_id?: string;
 }
+
+export class UpdateSuppliersDto {
+  suppliers?: string[];
+  _id: string;
+}

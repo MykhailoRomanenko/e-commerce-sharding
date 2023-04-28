@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './entities/product.entity';
-import { FilterQuery, Model } from 'mongoose';
-import { CreateProductDto, ProductFindAllParams } from './dto/dto';
+import { FilterQuery, Model, MongooseError } from 'mongoose';
+import {
+  CreateProductDto,
+  ProductFindAllParams,
+  UpdateSuppliersDto,
+} from './dto/dto';
+import { Nack } from '@golevelup/nestjs-rabbitmq';
 
 @Injectable()
 export class ProductService {
@@ -11,7 +16,6 @@ export class ProductService {
   ) {}
 
   findAll(params: ProductFindAllParams) {
-    console.log('Parans', params);
     const findParams: FilterQuery<Product> = {};
     if (params.category_id) {
       findParams.category_id = params.category_id;
@@ -20,6 +24,14 @@ export class ProductService {
   }
 
   create(dto: CreateProductDto) {
-    return this.productModel.insertMany([dto]);
+    return this.productModel.insertMany([{ ...dto, suppliers: [] }]);
+  }
+
+  async update(dto: UpdateSuppliersDto) {
+    console.log(dto);
+    return await this.productModel.updateMany(
+      { _id: dto._id },
+      { $set: { suppliers: dto.suppliers || [] } },
+    );
   }
 }

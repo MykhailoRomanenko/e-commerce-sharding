@@ -1,5 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { CreateProductDto, ProductFindAllParams } from './dto/dto';
+import {
+  CreateProductDto,
+  ProductFindAllParams,
+  UpdateSuppliersDto,
+} from './dto/dto';
 import { TransportService } from '../transport/transport.service';
 import { Product } from './entities/product.entity';
 import { Cache } from 'cache-manager';
@@ -46,6 +50,15 @@ export class ProductService {
       .set(cacheKey, res, 5000)
       .catch((err) => this.logger.error(err));
 
+    return res;
+  }
+
+  async update(dto: UpdateSuppliersDto & { _id: string }) {
+    console.log(dto);
+    const res = await this.transportService.request<
+      { success: boolean },
+      UpdateSuppliersDto
+    >('update-product', dto);
     return res;
   }
 }

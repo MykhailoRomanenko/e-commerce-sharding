@@ -9,6 +9,8 @@ export class Product extends Document {
   description?: string;
   @Prop({ type: Types.ObjectId, ref: 'categories' })
   category_id: string;
+  @Prop()
+  suppliers: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

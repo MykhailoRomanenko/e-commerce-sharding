@@ -22,3 +22,10 @@ export class ProductFindAllParams {
   @Matches(objectIdRegex)
   category_id?: string;
 }
+
+export class UpdateSuppliersDto {
+  @IsString()
+  _id: string;
+  @IsOptional()
+  suppliers?: string[];
+}
