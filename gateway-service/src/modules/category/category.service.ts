@@ -27,7 +27,7 @@ export class CategoryService {
   async findAll() {
     this.logger.log('Sending findall-category');
 
-    const cacheKey = 'findall:category';
+    const cacheKey = 'categories';
     const fromCache = await this.cacheService.get(cacheKey);
     if (fromCache) {
       this.logger.log(`Retrieved ${cacheKey} from cache`);
