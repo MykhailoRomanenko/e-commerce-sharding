@@ -117,6 +117,16 @@ services:
     networks:
       - n1
 
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks:
+       - n1
+
   data-access-service-1:
     build: 
       context: data-access-service
@@ -149,4 +159,6 @@ volumes:
   rmq-2:
     driver: local
   rmq-3:
+    driver: local
+  redis:
     driver: local
