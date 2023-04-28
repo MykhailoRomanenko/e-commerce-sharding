@@ -126,6 +126,8 @@ services:
       - "3000:3000"
     env_file:
       - rmq.env
+    environment:
+      - REDIS_URL=redis://redis:6379
     networks:
       - n1
     depends_on:
@@ -140,6 +142,8 @@ services:
       - "3001:3000"
     env_file:
       - rmq.env
+    environment:
+      - REDIS_URL=redis://redis:6379
     networks:
       - n1
 
