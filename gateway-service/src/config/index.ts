@@ -4,6 +4,7 @@ export interface AppConfig {
   rmqUrl: string[];
   port: string;
   exchange: string;
+  redisUrl: string;
 }
 
 export type AppConfigService = ConfigService<AppConfig, true>;
@@ -15,5 +16,6 @@ export function loadConfig(): AppConfig {
     rmqUrl: process.env.RMQ_URL?.split('|'),
     port,
     exchange: 'my-exchange',
+    redisUrl: process.env.REDIS_URL,
   };
 }
